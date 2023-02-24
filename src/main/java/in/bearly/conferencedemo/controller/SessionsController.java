@@ -2,6 +2,7 @@ package in.bearly.conferencedemo.controller;
 
 import in.bearly.conferencedemo.models.Session;
 import in.bearly.conferencedemo.repository.SessionRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,4 +31,15 @@ public class SessionsController {
         return sessionRepository.saveAndFlush(session);
     }
 
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable Long id) {
+        sessionRepository.deleteById(id);
+    }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public Session update(@PathVariable Long id, @RequestBody Session session) {
+        Session existingSession = sessionRepository.getOne(id);
+        BeanUtils.copyProperties(session, existingSession, "session_id");
+        return sessionRepository.saveAndFlush(existingSession);
+    }
 }
